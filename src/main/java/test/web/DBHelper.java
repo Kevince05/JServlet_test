@@ -33,15 +33,14 @@ public class DBHelper {
 
 	public Boolean register(String username, String password) throws SQLException {
 		Statement stmt = conn.createStatement();
-		String sql = "INSERT INTO users (username, password) VALUES ('" + username + "', '" + password + "')";
+		String sql = "INSERT INTO users (username, password) VALUES ('" + username + "', MD5('" + password + "'))";
 		stmt.executeUpdate(sql);
 		return true;
-
 	}
 	
 	public Boolean login(String username, String password) throws SQLException {
 		Statement stmt = conn.createStatement();
-		String sql = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+		String sql = "SELECT * FROM users WHERE username = '" + username + "' AND password = MD5('" + password + "')";
 		ResultSet rs = stmt.executeQuery(sql);
 		if (rs.next()) {
 			return true;
@@ -54,9 +53,9 @@ public class DBHelper {
         String sql = "SELECT id,username FROM users";
         ResultSet rs = stmt.executeQuery(sql);
 		ArrayList<Users> ret = new ArrayList<Users>();
-        do{
+		while (rs.next()){
             ret.add(new Users(rs.getInt("id"), rs.getString("username")));
-        } while (rs.next());
+        }
         return ret;
     }
 }

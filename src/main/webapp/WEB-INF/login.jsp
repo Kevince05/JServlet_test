@@ -21,28 +21,27 @@
 			id="navbarsExample08">
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" href="home">Home</a></li>
-				<li class="nav-item active"><a class="nav-link" href="visitor">Visitors
+				<li class="nav-item"><a class="nav-link" href="visitor">Visitors
 						Log</a></li>
 				<li class="nav-item"><a class="nav-link" href="users">Users</a></li>
 			</ul>
 		</div>
-		<a class="btn btn-success" href="login">Login</a>
 	</nav>
-	<h1>Login</h1>
-	<div class="form-group">
-		<form method="post">
-			<input type="text" name="username" placeholder="Username" required><br>
-			<input type="password" name="password" placeholder="Password"
-				required><br> <input type="submit" name="request"
-				value="Login">
-		</form>
-		<form method="post">
-			<input type="text" name="username" placeholder="Username" required><br>
-			<input type="password" name="password" placeholder="Password"
-				required><br> <input type="submit" name="request"
-				value="Register">
-		</form>
-		<div/>
+
+	<form method="POST" action="home" class="container">
+		<div class="form-group">
+			<label for="username">Username</label> <input type="text"
+				class="form-control" id="username" name="username" required>
+		</div>
+		<div class="form-group">
+			<label for="password">Password</label> <input type="password"
+				class="form-control" id="password" name="password" required>
+		</div>
+		<button type="submit" class="btn btn-primary" name="request"
+			value="Login">Login</button>
+		<button type="submit" class="btn btn-primary" name="request"
+			value="Register">Register</button>
+	</form>
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -55,4 +54,7 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
 	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 	crossorigin="anonymous"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<jsp:include page="shared/logout-confirmation.jsp" />
 </html>

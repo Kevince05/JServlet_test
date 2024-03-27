@@ -1,6 +1,8 @@
 package test.web;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +22,7 @@ public class testServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static ArrayList<Visitor> visitors_list = new ArrayList<Visitor>();
 	private static DBHelper db;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -40,6 +43,7 @@ public class testServlet extends HttpServlet {
 			System.out.println("Error connecting to the database (" + e.getMessage() + ")");
 		}
 	}
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -54,45 +58,65 @@ public class testServlet extends HttpServlet {
 			case "Reset":
 				visitors_list.clear();
 				Visitor.nextId = 0;
-				response.sendRedirect("/test/visitor");
 				break;
 			case "Delete":
-				while (visitors_list.removeIf(v -> v.getId() == Integer.parseInt(request.getParameter("id"))));
-				response.sendRedirect("/test/visitor");
+				while (visitors_list.removeIf(v -> v.getId() == Integer.parseInt(request.getParameter("id"))))
+					;
 				break;
 			case "Login":
-                response.sendRedirect("/test/home");
-				break;
-			case "Register":
-				response.sendRedirect("/test/home");
-				break;
-			}
-		} else {
-			visitors_list.add(new Visitor(request.getRemoteAddr(), request.getRemotePort(),LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")), path));
-			switch (route) {
-			case "users":
 				try {
-					request.setAttribute("user_list", db.getAllUsers());
+					if (db.login(request.getParameter("username"), request.getParameter("password"))) {
+						request.getSession().setAttribute("username", request.getParameter("username"));
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				disp = request.getRequestDispatcher("/WEB-INF/users.jsp");
 				break;
-			case "login":
-				disp = request.getRequestDispatcher("/WEB-INF/login.jsp");
+			case "Register":
+				try {
+					if (db.register(request.getParameter("username"), request.getParameter("password"))) {
+						request.getSession().setAttribute("username", request.getParameter("username"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				break;
-			case "visitor":
-			case "counter":
-			case "count":
-				request.setAttribute("visitors_list", visitors_list);
-				disp = request.getRequestDispatcher("/WEB-INF/visitor.jsp");
-				break;
-			default:
-				disp = request.getRequestDispatcher("/WEB-INF/home.jsp");
-				break;
+			case "Logout":
+                request.getSession().removeAttribute("username");
+                break;
 			}
-			disp.forward(request, response);
 		}
+		visitors_list.add(new Visitor(request.getRemoteAddr(), request.getRemotePort(),
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")), path));
+
+		switch (route) {
+		case "users":
+			try {
+				request.setAttribute("user_list", db.getAllUsers());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disp = request.getRequestDispatcher("/WEB-INF/users.jsp");
+			break;
+		case "login":
+			disp = request.getRequestDispatcher("/WEB-INF/login.jsp");
+			break;
+		case "visitor":
+		case "counter":
+		case "count":
+			request.setAttribute("visitors_list", visitors_list);
+			disp = request.getRequestDispatcher("/WEB-INF/visitor.jsp");
+			break;
+		default:
+			disp = request.getRequestDispatcher("/WEB-INF/home.jsp");
+			break;
+		}
+		if (request.getSession().getAttribute("username") != null) {
+			request.setAttribute("logged", true);
+		} else {
+			request.setAttribute("logged", false);
+		}
+		disp.forward(request, response);
 	}
 
 	/**

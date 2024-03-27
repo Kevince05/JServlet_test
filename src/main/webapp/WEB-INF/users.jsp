@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
@@ -19,11 +19,16 @@
 			id="navbarsExample08">
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" href="home">Home</a></li>
-				<li class="nav-item active"><a class="nav-link" href="visitor">Visitors Log</a></li>
-				<li class="nav-item"><a class="nav-link" href="users">Users</a></li>
+				<li class="nav-item"><a class="nav-link" href="visitor">Visitors Log</a></li>
+				<li class="nav-item active"><a class="nav-link" href="users">Users</a></li>
 			</ul>
 		</div>
-		<a class="btn btn-success" href="login">Login</a>
+		<form method="POST">
+			<c:if test="${logged}">
+			<button class="btn btn-danger mx-2" id="logout">Logout</button>
+		</c:if>
+			<a class="btn btn-success" href="login">Login</a>
+		</form>
 	</nav>
 	<h1 style="text-align: center;">User list</h1>
 	<div class="container">
@@ -32,27 +37,19 @@
 				<th scope="col">ID</th>
 				<th scope="col">Username</th>
 			</tr>
-			<c:forEach items="${user_list}" var="visitor">
+			<c:forEach items="${user_list}" var="user">
 				<tr>
 					<td scope="col"><c:out value="${user.id}" /></td>
 					<td scope="col"><c:out value="${user.username}" /></td>
-
-					<td scope="col"><form method="post">
-							<input type="hidden" name="id" value="${visitor.id}" /> <input
-								type="submit" class="btn btn-danger" value="Delete"
-								name="request" />
-						</form></td>
 				</tr>
 			</c:forEach>
 		</table>
-		<form method="post"
-			style="display: flex; align-items: center; justify-content: center;">
-			<input class="btn btn-primary" type="submit" value="Reset"
-				name="request" />
-		</form>
 	</div>
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<jsp:include page="shared/logout-confirmation.jsp" />
 </html>
